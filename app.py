@@ -20,9 +20,34 @@ def user_input(server):
     print('Login was a Success')
     return user_info
 
+def get_email_content():
+    # ask user if they want to 
+    print('\nEmail Content Selection')
+    print('=================================')
+    choice = int(input('\n1) Use body.txt for the emails content\n2) Use another file\n3) Input manually\nChoice: '))
+
+    if choice == 1:
+        content = import_body('body.txt')
+    elif choice == 2:
+        file_path = str(input('Enter the filepath: '))
+        content = import_body(filepath) 
+    elif choice == 3:
+        content = str(input('Body: '))
+    
+    content_type = int(input('\n1) Text file\n2) Html File\nChoice: '))
+    if content_type == 1:
+        body_type = 'plain'
+    elif content_type ==2:
+        body_type = 'html'
+    # object that returns the file path and the body type
+    body_info = {'Content': content, 'Body Type': body_type}
+
+    return body_info
+
+
 # imports the emails body's content from a external file
-def import_body():
-    f = open('body.txt','r')
+def import_body(file):
+    f = open(file,'r')
     body = f.read()
     return body
 
@@ -30,12 +55,14 @@ def import_body():
 def construct_email(user_info, server):
     # Define the email as multipart to be able to attach multiple stuff to the object
     email = MIMEMultipart()
+    
     # Constructing the Email
     email['From'] = user_info['Email']
     email['To'] = user_info['Target Email']
     email['Subject'] = user_info['Email Subject']
-    body = import_body()
-    email.attach(MIMEText(body,'plain'))
+    body_info = get_email_content()
+    body = body_info['Content']
+    email.attach(MIMEText(body,body_info['Body Type']))
     text = email.as_string()
     send_email(user_info['Email'], user_info['Target Email'],text,server)
     
@@ -48,10 +75,6 @@ def send_email(senders_email,target_email,email,server):
 
 def main():
     '''
-        Additions needed to be added:
-        - let the user choose whether they was to input their log in information or read it in from a file
-        - let the user choose whether they want to input the body of the text or read it in from a file
-            - if user chooses to read in from a file ask the user whether its plain text or if it is html
         - allow user to attach file(s)
     '''
     # Set up Email server using Gmail
