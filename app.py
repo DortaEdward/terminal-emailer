@@ -52,6 +52,7 @@ def main():
         - let the user choose whether they was to input their log in information or read it in from a file
         - let the user choose whether they want to input the body of the text or read it in from a file
             - if user chooses to read in from a file ask the user whether its plain text or if it is html
+        - allow user to attach file(s)
     '''
     # Set up Email server using Gmail
     server = smtplib.SMTP('smtp.gmail.com',587)
